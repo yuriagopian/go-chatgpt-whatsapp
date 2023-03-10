@@ -19,9 +19,22 @@ type Response struct {
 }
 
 type Choice struct {
-	Index   int `json:"index"`
-	Message struct {
+	Index   int      `json:"index"`
+	Message struct { // daria para usar a struct de message de cima, mas é um exemplo de utilização
 		Role    string `json:"role"`
 		Content string `json:"content"`
 	} `json:"message"`
+}
+
+func GenerateGPTText(query string) (string, error) {
+	req := Request{
+		Model: "gpt-3.5-turbo",
+		Messages: []Message{
+			{
+				Role:    "user",
+				Content: query,
+			},
+		},
+		MaxTokens: 150,
+	}
 }
