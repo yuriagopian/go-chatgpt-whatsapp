@@ -1,8 +1,11 @@
 package main
 
 import (
+	"bytes"
 	"encoding/json"
-	"io/ioutil"
+	"io"
+
+	// "io/ioutil"
 	"net/http"
 )
 
@@ -50,7 +53,7 @@ func GenerateGPTText(query string) (string, error) {
 		return "", err
 	}
 
-	request, err := http.NewRequest("POST", "https://api.openai.com/v1/chat/completions", bytes.newReader(reqJson))
+	request, err := http.NewRequest("POST", "https://api.openai.com/v1/chat/completions", bytes.NewReader(reqJson))
 
 	if err != nil {
 		return "", err
@@ -67,7 +70,8 @@ func GenerateGPTText(query string) (string, error) {
 
 	defer response.Body.Close() // Roda tudo que ta em baixo do defer e depois roda o defer
 
-	respBody, err := ioutil.ReadAll(response.Body)
+	// respBody, err := ioutil.ReadAll(response.Body)
+	respBody, err := io.ReadAll(response.Body)
 
 	if err != nil {
 		return "", err
