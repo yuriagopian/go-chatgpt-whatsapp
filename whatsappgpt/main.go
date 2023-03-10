@@ -98,13 +98,13 @@ func parseBase64RequestData(r string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	data, err := url.ParseQuery(string(dataBytes))
+	data, _ := url.ParseQuery(string(dataBytes))
 
 	if data.Has("Body") {
 		return data.Get("Body"), nil
 	}
 
-	return "", errors.New("Body not found")
+	return "", errors.New("body not found")
 }
 func process(request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
 	result, err := parseBase64RequestData(request.Body)
