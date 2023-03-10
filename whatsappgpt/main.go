@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/base64"
 	"encoding/json"
+	"errors"
 	"io"
 
 	// "io/ioutil"
@@ -102,7 +103,7 @@ func parseBase64RequestData(r string) (string, error) {
 		return data.Get("Body"), nil
 	}
 
-	return "", err
+	return "", errors.New("Body not found")
 }
 func process(request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
 
