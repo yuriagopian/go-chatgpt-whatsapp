@@ -1,5 +1,10 @@
 package main
 
+import (
+	"encoding/json"
+	"net/http"
+)
+
 type Message struct {
 	Role    string `json:"role"`
 	Content string `json:"content"`
@@ -37,4 +42,28 @@ func GenerateGPTText(query string) (string, error) {
 		},
 		MaxTokens: 150,
 	}
+
+	reqJson, err := json.Marshal(req)
+
+	if err != nil {
+		return "", err
+	}
+
+	request, err := http.NewRequest("POST", "https://api.openai.com/v1/chat/completions", bytes.newReader(reqJson))
+
+	if err != nil {
+		return "", err
+	}
+
+	request.Header.Set("Content-Type", "application/json")
+	request.Header.Set("Authorization", "Bearer YOUR_API_KEY")
+
+	response, err := http.DefaultClient.Do(request)
+
+	if err != nil {
+		return "", err
+	}
+
+	defer response.Body.Close() // Roda tudo que ta em baixo do defer e depois roda o defer
+
 }
