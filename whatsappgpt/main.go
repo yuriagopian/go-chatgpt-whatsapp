@@ -2,11 +2,13 @@ package main
 
 import (
 	"bytes"
+	"encoding/base64"
 	"encoding/json"
 	"io"
 
 	// "io/ioutil"
 	"net/http"
+	"net/url"
 
 	"github.com/aws/aws-lambda-go/events"
 )
@@ -88,6 +90,20 @@ func GenerateGPTText(query string) (string, error) {
 	return resp.Choices[0].Message.Content, nil
 }
 
+func parseBase64RequestData(r string) (string, error) {
+	dataBytes, err := base64.StdEncoding.DecodeString(r)
+
+	if err != nil {
+		return "", err
+	}
+	data, err := url.ParseQuery(string(dataBytes))
+
+	if data.Has("Body") {
+		return data.Get("Body"), nil
+	}
+
+	return "", err
+}
 func process(request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
 
 }
