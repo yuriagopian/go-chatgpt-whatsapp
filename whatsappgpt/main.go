@@ -7,6 +7,8 @@ import (
 
 	// "io/ioutil"
 	"net/http"
+
+	"github.com/aws/aws-lambda-go/events"
 )
 
 type Message struct {
@@ -85,3 +87,5 @@ func GenerateGPTText(query string) (string, error) {
 
 	return resp.Choices[0].Message.Content, nil
 }
+
+func process(request events.APIGatewayRequest) (events.APIGatewayResponse, error) {}
