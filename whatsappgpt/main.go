@@ -106,5 +106,26 @@ func parseBase64RequestData(r string) (string, error) {
 	return "", errors.New("Body not found")
 }
 func process(request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+	result, err := parseBase64RequestData(request.Body)
 
+	if err != nil {
+		return events.APIGatewayProxyResponse{
+			StatusCode: http.StatusInternalServerError,
+			Body:       err.Error(),
+		}, nil
+	}
+
+	text, err := GenerateGPTText(result)
+
+	if err != nil {
+		return events.APIGatewayProxyResponse{
+			StatusCode: http.StatusInternalServerError,
+			Body:       err.Error(),
+		}, nil
+	}
+
+	return events.APIGatewayProxyResponse{
+		StatusCode: http.StatusOK,
+		Body:       text,
+	}, nil
 }
