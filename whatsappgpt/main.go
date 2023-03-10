@@ -88,4 +88,6 @@ func GenerateGPTText(query string) (string, error) {
 	return resp.Choices[0].Message.Content, nil
 }
 
-func process(request events.APIGatewayRequest) (events.APIGatewayResponse, error) {}
+func process(request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+
+}
