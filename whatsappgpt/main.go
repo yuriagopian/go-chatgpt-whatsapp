@@ -12,6 +12,7 @@ import (
 	"net/url"
 
 	"github.com/aws/aws-lambda-go/events"
+	"github.com/aws/aws-lambda-go/lambda"
 )
 
 type Message struct {
@@ -128,4 +129,8 @@ func process(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 		StatusCode: http.StatusOK,
 		Body:       text,
 	}, nil
+}
+
+func main() {
+	lambda.Start(process)
 }
