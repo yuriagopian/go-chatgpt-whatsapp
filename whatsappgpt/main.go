@@ -5,7 +5,10 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"io"
+	"log"
+	"os"
 
 	// "io/ioutil"
 	"net/http"
@@ -13,6 +16,7 @@ import (
 
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
+	"github.com/joho/godotenv"
 )
 
 type Message struct {
@@ -41,6 +45,18 @@ type Choice struct {
 	} `json:"message"`
 }
 
+func goDotEnvVariable(key string) string {
+
+	// load .env file
+	err := godotenv.Load(".env")
+
+	if err != nil {
+		log.Fatalf("Error loading .env file")
+	}
+
+	return os.Getenv(key)
+}
+
 func GenerateGPTText(query string) (string, error) {
 	req := Request{
 		Model: "gpt-3.5-turbo",
@@ -65,9 +81,13 @@ func GenerateGPTText(query string) (string, error) {
 		return "", err
 	}
 
-	request.Header.Set("Content-Type", "application/json")
-	request.Header.Set("Authorization", "Bearer YOUR_API_KEY")
+	chatGptApikey := goDotEnvVariable("CHAT_GPT_API_KEY")
 
+	fmt.Println(chatGptApikey)
+
+	request.Header.Set("Content-Type", "application/json")
+	request.Header.Set("Authorization", "Bearer"+chatGptApikey)
+	fmt.Println(request.Header)
 	response, err := http.DefaultClient.Do(request)
 
 	if err != nil {
@@ -132,5 +152,6 @@ func process(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 }
 
 func main() {
+	godotenv.Load(".env")
 	lambda.Start(process)
 }

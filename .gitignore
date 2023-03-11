@@ -1,5 +1,9 @@
 # Serverless directories
 .serverless
+.env
+
+## ambient variables
+.env
 
 # golang output binary directory
 bin
