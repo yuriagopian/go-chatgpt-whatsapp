@@ -81,7 +81,7 @@ func GenerateGPTText(query string) (string, error) {
 		return "", err
 	}
 
-	chatGptApikey := goDotEnvVariable("CHAT_GPT_API_KEY")
+	chatGptApikey := os.Getenv("CHAT_GPT_API_KEY")
 
 	fmt.Println(chatGptApikey)
 
@@ -127,6 +127,7 @@ func parseBase64RequestData(r string) (string, error) {
 	return "", errors.New("body not found")
 }
 func process(request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+	fmt.Println("request", request)
 	result, err := parseBase64RequestData(request.Body)
 
 	if err != nil {
@@ -135,7 +136,7 @@ func process(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 			Body:       err.Error(),
 		}, nil
 	}
-
+	println("aqui2 ")
 	text, err := GenerateGPTText(result)
 
 	if err != nil {
@@ -151,7 +152,16 @@ func process(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 	}, nil
 }
 
+func Handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+	fmt.Println("Received body: ", request.Body)
+
+	return events.APIGatewayProxyResponse{Body: request.Body, StatusCode: 200}, nil
+}
+
 func main() {
-	godotenv.Load(".env")
-	lambda.Start(process)
+	fmt.Println("1 aqui")
+	fmt.Println(godotenv.Load(".env"))
+	fmt.Println(os.Getenv("TWILIO_SID"))
+	lambda.Start(Handler)
+	fmt.Println("teste")
 }
